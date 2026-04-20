@@ -1,0 +1,163 @@
+export interface XPost {
+  id: string;
+  text: string;
+  authorId: string;
+  authorHandle: string;
+  authorName: string;
+  authorFollowers: number;
+  authorBio: string;
+  createdAt: string;
+  metrics: { likes: number; retweets: number; replies: number };
+}
+
+// Hardcoded sample X posts with buying signals for MVP
+export const SAMPLE_POSTS: XPost[] = [
+  {
+    id: "post_001",
+    text: "Okay after 18 months we're throwing in the towel on Sprout Social. The reporting is great but $1600/mo for a team of 4 is insane. Looking for a real alternative — ideally something that plugs into our CRM. Budget is ~$400/mo. Recs?",
+    authorId: "u_001",
+    authorHandle: "priyaram",
+    authorName: "Priya Raman",
+    authorFollowers: 4200,
+    authorBio: "Head of Growth at Pocketbook (B2B fintech, Series A).",
+    createdAt: "2026-04-17T14:41:00Z",
+    metrics: { likes: 38, retweets: 4, replies: 22 },
+  },
+  {
+    id: "post_002",
+    text: "Anyone got recommendations for a social listening tool that actually surfaces buyer intent and not just mentions? We've tried Brandwatch and Mention — too much noise for a 3-person GTM team.",
+    authorId: "u_002",
+    authorHandle: "danokafor",
+    authorName: "Daniel Okafor",
+    authorFollowers: 12400,
+    authorBio: "Founder & CEO at Lumiwork (remote productivity). Ex-Asana PM.",
+    createdAt: "2026-04-17T14:17:00Z",
+    metrics: { likes: 64, retweets: 11, replies: 31 },
+  },
+  {
+    id: "post_003",
+    text: "What's the best tool for monitoring competitor mentions on X without drowning in spam? Hootsuite keeps showing me bots and crypto replies.",
+    authorId: "u_003",
+    authorHandle: "marisolvega",
+    authorName: "Marisol Vega",
+    authorFollowers: 860,
+    authorBio: "Marketing Lead · Series B SaaS · coffee, reading, very tired parent.",
+    createdAt: "2026-04-17T13:52:00Z",
+    metrics: { likes: 12, retweets: 1, replies: 9 },
+  },
+  {
+    id: "post_004",
+    text: "Switching from Hootsuite this quarter. The editor rewrite broke our scheduling and support is AI slop. Anyone made a move recently worth emulating?",
+    authorId: "u_004",
+    authorHandle: "jokonkwo",
+    authorName: "James Okonkwo",
+    authorFollowers: 2100,
+    authorBio: "Agency owner · Two Ravens Digital · managing social for 14 brands.",
+    createdAt: "2026-04-17T12:40:00Z",
+    metrics: { likes: 28, retweets: 3, replies: 14 },
+  },
+  {
+    id: "post_005",
+    text: "Sprout Social just raised prices 22%. We're done — switching this month. Shopping: anything with real buyer-intent signals for a 6-person sales team?",
+    authorId: "u_008",
+    authorHandle: "hgleeson",
+    authorName: "Hannah Gleeson",
+    authorFollowers: 5600,
+    authorBio: "Head of Demand Gen · Turnkey HR · B2B SaaS",
+    createdAt: "2026-04-17T08:14:00Z",
+    metrics: { likes: 51, retweets: 7, replies: 18 },
+  },
+  {
+    id: "post_006",
+    text: "Any good lightweight X monitoring tools that don't charge enterprise prices? All the big platforms feel like SAP at this point.",
+    authorId: "u_005",
+    authorHandle: "aishabrenner",
+    authorName: "Aisha Brenner",
+    authorFollowers: 7800,
+    authorBio: "Indie maker · building hammock.dev · solo.",
+    createdAt: "2026-04-17T11:31:00Z",
+    metrics: { likes: 19, retweets: 2, replies: 8 },
+  },
+  {
+    id: "post_007",
+    text: "Hunting for an alternative to Mention.com — the noise-to-signal ratio has gotten unusable since the V3 redesign. Ideally something that ranks leads.",
+    authorId: "u_010",
+    authorHandle: "nadia_ea",
+    authorName: "Nadia El-Amin",
+    authorFollowers: 3100,
+    authorBio: "Growth @ Relay Labs · B2B SaaS · Ex-Klaviyo",
+    createdAt: "2026-04-17T06:45:00Z",
+    metrics: { likes: 15, retweets: 1, replies: 6 },
+  },
+  {
+    id: "post_008",
+    text: "Do any social listening tools actually integrate with Salesforce properly? Or am I going to be stuck with manual CSV exports forever?",
+    authorId: "u_011",
+    authorHandle: "marcusbowman",
+    authorName: "Marcus Bowman",
+    authorFollowers: 9200,
+    authorBio: "RevOps @ Gridline · formerly Salesforce admin for 6 years",
+    createdAt: "2026-04-17T15:03:00Z",
+    metrics: { likes: 33, retweets: 5, replies: 17 },
+  },
+  {
+    id: "post_009",
+    text: "Looking for a tool that can tell me when someone is about to buy — not just when they mention my brand. Intent data, basically. Does this exist for X/Twitter?",
+    authorId: "u_012",
+    authorHandle: "sophiawren",
+    authorName: "Sophia Wren",
+    authorFollowers: 6700,
+    authorBio: "Head of Sales · Formstack · closing deals since 2019",
+    createdAt: "2026-04-17T09:30:00Z",
+    metrics: { likes: 44, retweets: 8, replies: 26 },
+  },
+  {
+    id: "post_010",
+    text: "We're a 15-person SaaS team. Brandwatch is overkill and Hootsuite is a mess. What's in between? Need keyword tracking + some kind of prioritization.",
+    authorId: "u_013",
+    authorHandle: "devonpark",
+    authorName: "Devon Park",
+    authorFollowers: 1800,
+    authorBio: "CEO @ Relay.so · building async video for remote teams",
+    createdAt: "2026-04-17T07:15:00Z",
+    metrics: { likes: 27, retweets: 3, replies: 11 },
+  },
+  // Low-signal / noise posts for model training variety
+  {
+    id: "post_011",
+    text: "Any good taquerías in Oakland? Working from a co-working there Friday.",
+    authorId: "u_009",
+    authorHandle: "therrera",
+    authorName: "Tomás Herrera",
+    authorFollowers: 920,
+    authorBio: "Engineer · backend",
+    createdAt: "2026-04-17T07:23:00Z",
+    metrics: { likes: 4, retweets: 0, replies: 11 },
+  },
+  {
+    id: "post_012",
+    text: "Recommendations for a budget-friendly video editor for TikTok/Reels? Not looking to spend Premiere money.",
+    authorId: "u_007",
+    authorHandle: "linwei",
+    authorName: "Lin Wei",
+    authorFollowers: 340,
+    authorBio: "Creator · fashion · 340k TikTok",
+    createdAt: "2026-04-17T09:02:00Z",
+    metrics: { likes: 8, retweets: 0, replies: 3 },
+  },
+];
+
+export const INTENT_KEYWORDS = [
+  "looking for",
+  "alternative to",
+  "recommendations for",
+  "best tool for",
+  "switching from",
+  "any good",
+  "does this exist",
+  "replace",
+  "cancel",
+  "too expensive",
+  "overpriced",
+  "shopping for",
+];

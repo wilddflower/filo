@@ -1,0 +1,179 @@
+.app {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  grid-template-rows: 80px 1fr;
+  grid-template-areas:
+    "rail topnav"
+    "rail main";
+  height: 100vh;
+  background: var(--bg);
+  padding: 14px;
+  gap: 14px;
+  min-width: 0;
+}
+
+.rail {
+  grid-area: rail;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: calc(100vh - 28px);
+  position: sticky;
+  top: 14px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 30px rgba(25,25,25,0.06);
+  overflow: visible;
+}
+
+.brandMark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #FF7A5C 0%, #FF5833 50%, #D93B1A 100%);
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 14px rgba(255,88,51,0.45);
+  flex-shrink: 0;
+}
+
+.railIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background 140ms, color 140ms;
+  position: relative;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.railIcon:hover { background: var(--surface-3); color: var(--ink); }
+.railIcon.active { background: var(--ink); color: white; }
+
+.pop {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink);
+  color: white;
+  font-size: 11.5px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+  z-index: 50;
+  font-family: var(--font-sans);
+}
+.railIcon:hover .pop { opacity: 1; }
+
+.railSpacer { flex: 1; }
+
+.topnav {
+  grid-area: topnav;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.brandWordmark {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.dim { color: var(--ink-3); font-weight: 400; }
+
+.topnavPills {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 999px;
+  padding: 6px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 30px rgba(25,25,25,0.06);
+}
+
+.navPill {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  transition: all 150ms;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.navPill:hover { color: var(--ink); }
+.navPill.active { background: var(--ink); color: white; }
+
+.dotNotif {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-left: 2px;
+}
+
+.topnavRight { display: flex; align-items: center; gap: 10px; }
+
+.userChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.55);
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 30px rgba(25,25,25,0.06);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF5833, #C24018);
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.meta { display: flex; flex-direction: column; line-height: 1.1; }
+.name { font-size: 12.5px; font-weight: 600; }
+.handle { font-size: 11px; color: var(--ink-3); }
+
+.main {
+  grid-area: main;
+  overflow: auto;
+  padding: 0 8px;
+  min-width: 0;
+}

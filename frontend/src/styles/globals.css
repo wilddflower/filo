@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #FAF9F7;
+  --surface:   rgba(255,255,255,0.78);
+  --surface-solid: #FFFFFF;
+  --surface-2: rgba(248,247,244,0.75);
+  --surface-3: #F1F0EC;
+
+  --glass-blur: 22px;
+  --glass-border: 1px solid rgba(255,255,255,0.55);
+  --glass-shine: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 28%, rgba(255,255,255,0) 55%);
+  --glass-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 -1px 0 rgba(0,0,0,0.04) inset, 0 10px 30px rgba(25,25,25,0.06), 0 2px 6px rgba(25,25,25,0.04);
+  --glass-shadow-deep: 0 1px 0 rgba(255,255,255,0.7) inset, 0 -1px 0 rgba(0,0,0,0.04) inset, 0 24px 48px rgba(15,15,15,0.10), 0 6px 14px rgba(15,15,15,0.06);
+
+  --ink:   #0D0D0D;
+  --ink-2: #2E2E2E;
+  --ink-3: #6B6B6B;
+  --ink-4: #9A9A9A;
+  --ink-5: #C4C3C0;
+
+  --line:   #E4E3DF;
+  --line-2: #D7D6D1;
+
+  --accent:        #FF5833;
+  --accent-ink:    #D93B1A;
+  --accent-soft:   #FFE4DD;
+  --accent-soft-2: #FFF1EC;
+  --accent-hover:  #FF6E4E;
+
+  --pos:       #1FAE5A;
+  --pos-soft:  #E2F5EA;
+  --warn:      #E8A028;
+  --warn-soft: #FAEFDA;
+  --info:      #3D7BFF;
+  --info-soft: #E6EDFF;
+
+  --radius-sm: 10px;
+  --radius:    16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
+  position: relative;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(620px 420px at 8% 6%, rgba(255,88,51,0.12), transparent 60%),
+    radial-gradient(520px 380px at 96% 12%, rgba(255,148,100,0.09), transparent 65%),
+    radial-gradient(680px 500px at 82% 94%, rgba(255,88,51,0.07), transparent 60%),
+    radial-gradient(420px 320px at 18% 88%, rgba(80,50,200,0.05), transparent 65%);
+}
+body > * { position: relative; z-index: 1; }
+
+button { font-family: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+input, textarea, select { font-family: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); background-clip: padding-box; border: 2px solid transparent; }
