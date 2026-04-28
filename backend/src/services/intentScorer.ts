@@ -143,39 +143,44 @@ function fallbackScore(post: XPost): ScoredPost {
     "nobody wants", "nobody buys", "no conversions", "no signups",
   ];
 
-  // Specific multi-word phrases only — avoids false matches on common words
+  // Specific terms — single words only if they're startup-domain-specific
   const FOUNDER_GROWTH = [
-    // identity (specific enough alone)
-    "indie hacker", "indiehacker", "solo founder", "co-founder", "bootstrapped",
-    // growth / distribution phrases
+    // identity (safe single words — rare outside startup context)
+    "founder", "startup", "saas", "bootstrapped",
+    "indie hacker", "indiehacker", "solo founder", "co-founder", "solopreneur",
+    // growth phrases
     "user acquisition", "getting traction", "go-to-market", "gtm",
     "growth hack", "word of mouth", "product market fit", "pmf",
-    "organic growth", "viral loop", "viral coefficient",
-    // channels (specific combos)
+    "organic growth", "viral loop", "building in public",
+    // outreach
     "cold email", "cold outreach", "cold dm",
+    // launch / funnel
     "landing page", "waitlist", "early adopters", "early users",
     "launch strategy", "pre-launch", "product hunt", "hacker news", "show hn",
-    // stages / metrics
+    "just launched", "just shipped", "we launched", "i launched",
+    "i built", "i made", "my startup", "my saas", "building my",
+    "i'm building", "im building", "we're building",
+    // customers
     "paying customers", "first customers", "getting customers",
+    "get customers", "find customers", "no customers",
+    "first users", "get users", "getting users",
+    // metrics
     "mrr", "arr", "burn rate", "ramen profitable", "default alive",
     "churn rate", "activation rate",
-    // tweet phrases (whole phrases, not single words)
-    "i built", "i made", "just launched", "just shipped", "we launched",
-    "my startup", "my saas", "my indie",
-    "day 1 of", "week 1 of", "building in public",
   ];
 
   const FOUNDER_BIO = [
     "founder", "co-founder", "indie hacker", "indiehacker",
-    "bootstrapped", "building in public", "solopreneur",
+    "bootstrapped", "building in public", "solopreneur", "saas",
   ];
 
   const PAIN_SIGNALS = [
-    "how do i get", "how to get more", "how to find customers",
+    "how do i get", "how to get more", "how to find",
     "struggling with", "stuck on", "frustrated with",
     "what works for", "any suggestions", "anyone tried",
     "what am i doing wrong", "tried everything", "nothing is working",
-    "plateau", "stagnant growth",
+    "need help", "help me", "any advice",
+    "plateau", "stagnant",
   ];
 
   const highPainHits = HIGH_PAIN.filter((k) => text.includes(k)).length;
