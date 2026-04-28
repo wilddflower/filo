@@ -205,31 +205,32 @@ function fallbackScore(post: XPost): ScoredPost {
     };
   }
 
-  const highPainHits = HIGH_PAIN.filter((k) => text.includes(k)).length;
-  const growthHits = FOUNDER_GROWTH.filter((k) => text.includes(k) || bio.includes(k)).length;
-  const painHits = PAIN_SIGNALS.filter((k) => text.includes(k)).length;
-  const founderBio = FOUNDER_BIO.some((k) => bio.includes(k));
+  // Score only from TWEET TEXT — bio is context, not signal.
+  // Counting bio terms in growthHits caused every founder-bio account to score 4
+  // regardless of what they actually tweeted (the root cause of garbage leads).
+  const textHighPain = HIGH_PAIN.filter((k) => text.includes(k)).length;
+  const textGrowth   = FOUNDER_GROWTH.filter((k) => text.includes(k)).length;
+  const textPain     = PAIN_SIGNALS.filter((k) => text.includes(k)).length;
+  const founderBio   = FOUNDER_BIO.some((k) => bio.includes(k));
 
   let score: number;
-  if (highPainHits >= 1) {
+  if (textHighPain >= 1) {
+    // Explicit growth pain phrase in tweet → high value
     score = 8;
-  } else if (growthHits >= 4 && painHits >= 1) {
+  } else if (textGrowth >= 2 && textPain >= 1) {
     score = 7;
-  } else if (growthHits >= 3 && painHits >= 1) {
-    score = 7;
-  } else if (growthHits >= 2 && painHits >= 1) {
+  } else if (textGrowth >= 1 && textPain >= 1) {
     score = 6;
-  } else if (growthHits >= 3) {
+  } else if (textGrowth >= 2) {
     score = 5;
-  } else if (growthHits >= 2) {
-    score = 5;
-  } else if (growthHits >= 1 && painHits >= 1) {
-    score = 5;
-  } else if (growthHits >= 1 || (founderBio && painHits >= 1)) {
+  } else if (textGrowth >= 1 && founderBio) {
+    // Tweet mentions growth + account is a founder → borderline relevant
     score = 4;
-  } else if (founderBio && growthHits === 0) {
-    score = 3;
+  } else if (textPain >= 1 && founderBio) {
+    // Asking for help + founder bio → borderline relevant
+    score = 4;
   } else {
+    // Bio alone is NOT enough — score 2 (filtered out, never shown)
     score = 2;
   }
 
