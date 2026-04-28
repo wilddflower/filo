@@ -59,14 +59,17 @@ function Spark({ data, color }: { data: number[]; color: string }) {
 
 /* ── Big week line chart ── */
 function WeekChart({ data, color }: { data: number[]; color: string }) {
-  const W = 560, H = 130, padX = 12, padY = 16;
-  const max = Math.max(...data, 1);
+  const W = 560, H = 200, padX = 12, padY = 20;
+  // Relative scaling: min value = bottom, max value = top — line always spans full height
+  const min = Math.min(...data);
+  const max = Math.max(...data, min + 1);
+  const range = max - min;
   const xs = data.map((_, i) => padX + (i / (data.length - 1)) * (W - padX * 2));
-  const ys = data.map((v) => padY + (H - padY * 2) * (1 - v / max));
+  const ys = data.map((v) => padY + (H - padY * 2) * (1 - (v - min) / range));
   const line = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
   const area = `${line} L${xs[xs.length-1]},${H} L${xs[0]},${H} Z`;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className={styles.weekChart} preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${W} ${H}`} className={styles.weekChart} preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%"   stopColor={color} stopOpacity="0.20" />
@@ -146,7 +149,7 @@ export default function AnalyticsPage() {
 
   // Rising curve: today = real total, earlier days scale down proportionally.
   // Keeps the chart visually meaningful without a huge spike vs flat baseline.
-  const RISE = [0.30, 0.42, 0.54, 0.63, 0.74, 0.87, 1.0];
+  const RISE = [0.04, 0.12, 0.25, 0.40, 0.58, 0.78, 1.0];
   const hiRatio = total > 0 ? hi / total : 0.15;
   const signalData    = total > 0
     ? RISE.map((w) => Math.max(1, Math.round(total * w)))
