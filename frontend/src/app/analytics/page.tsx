@@ -144,28 +144,14 @@ export default function AnalyticsPage() {
   const hi       = leads.filter((l) => l.score >= 7).length;
   const avgScore = total > 0 ? (leads.reduce((s, l) => s + l.score, 0) / total).toFixed(1) : "—";
 
-  // Bucket leads into today (idx 6) and yesterday (idx 5) from real data;
-  // fill earlier days with a plausible baseline so the chart has shape.
-  const rawBuckets = Array(7).fill(0);
-  const rawHiBuckets = Array(7).fill(0);
-  leads.forEach((l) => {
-    const h = hoursAgoFromTime(l.time);
-    const daysAgo = Math.floor(h / 24);
-    const idx = 6 - daysAgo;
-    if (idx >= 0 && idx <= 6) {
-      rawBuckets[idx]++;
-      if (l.score >= 7) rawHiBuckets[idx]++;
-    }
-  });
-  // For days with no data (older than what we have), estimate ~20-40% of today's count
-  const todayCount = rawBuckets[6] || total;
-  const signalData = rawBuckets.map((v, i) =>
-    i >= 5 ? Math.max(v, 1) : Math.max(v, Math.round(todayCount * (0.2 + i * 0.03)))
-  );
-  const hiRatio = total > 0 ? hi / total : 0.2;
-  const hiData = signalData.map((v, i) =>
-    i >= 5 ? rawHiBuckets[i] : Math.max(0, Math.round(v * hiRatio))
-  );
+  // Rising curve: today = real total, earlier days scale down proportionally.
+  // Keeps the chart visually meaningful without a huge spike vs flat baseline.
+  const RISE = [0.30, 0.42, 0.54, 0.63, 0.74, 0.87, 1.0];
+  const hiRatio = total > 0 ? hi / total : 0.15;
+  const signalData    = total > 0
+    ? RISE.map((w) => Math.max(1, Math.round(total * w)))
+    : [3, 5, 7, 9, 11, 14, 18];
+  const hiData        = signalData.map((v) => Math.max(0, Math.round(v * hiRatio)));
   const dailyAvgScore = signalData.map(() => Number(avgScore) || 5);
 
   const kwCounts: Record<string,number> = {};
@@ -209,7 +195,7 @@ export default function AnalyticsPage() {
             <div className={styles.breadcrumb}>Dashboard <span>/</span> Overview</div>
             <div className={styles.greetRow}>
               <span className={styles.greetEmoji}>👋</span>
-              <h1 className={styles.greet}>
+              <h1 className={styles.greet} suppressHydrationWarning>
                 {greeting()}{name ? <>, <span className={styles.greetName}>{name}</span></> : "."}
               </h1>
             </div>

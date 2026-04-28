@@ -106,7 +106,7 @@ export function AppShell({ activePage, children, leadCount, savedCount }: AppShe
                 <Ico />
                 {item.label}
                 {count != null && count > 0 && (
-                  <span className={styles.navCount}>{count}</span>
+                  <span className={styles.navCount} suppressHydrationWarning>{count}</span>
                 )}
               </Link>
             );
