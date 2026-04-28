@@ -45,7 +45,9 @@ Scoring guide:
 
 A 4 requires BOTH a founder signal AND a growth-related tweet. Bio alone is not enough for a 4. Score 3 or below if the tweet topic is unrelated to building or growing a product.
 
-Hard rule: score 1 for religious, motivational, sports, or entertainment tweets — even if they contain words like "traction", "build", "grow", or "users". "No traction" in a faith/sports/personal context is NOT a founder growth signal.`;
+Hard rules:
+- Score 1 for religious, motivational, sports, political, or entertainment tweets — even if they contain words like "traction", "build", "grow", or "users". "No traction" about hockey, politics, car tires, or media is NOT a founder growth signal.
+- "No traction", "no users", "struggling to grow" only count as high-intent (8-10) when the tweet is clearly from a founder or the context is unmistakably about a product/startup. If the person could plausibly be talking about anything else, score 2-3.`;
 
   for (const model of MODELS) {
     try {
@@ -206,16 +208,18 @@ function fallbackScore(post: XPost): ScoredPost {
   }
 
   // Score only from TWEET TEXT — bio is context, not signal.
-  // Counting bio terms in growthHits caused every founder-bio account to score 4
-  // regardless of what they actually tweeted (the root cause of garbage leads).
   const textHighPain = HIGH_PAIN.filter((k) => text.includes(k)).length;
   const textGrowth   = FOUNDER_GROWTH.filter((k) => text.includes(k)).length;
   const textPain     = PAIN_SIGNALS.filter((k) => text.includes(k)).length;
   const founderBio   = FOUNDER_BIO.some((k) => bio.includes(k));
 
+  // HIGH_PAIN phrases like "no traction" appear in sports, politics, and car tires.
+  // Only counts as a high signal if there's also a startup context (tweet or bio).
+  const confirmedPain = textHighPain >= 1 && (textGrowth >= 1 || founderBio);
+
   let score: number;
-  if (textHighPain >= 1) {
-    // Explicit growth pain phrase in tweet → high value
+  if (confirmedPain) {
+    // Explicit growth pain + startup context → high value
     score = 8;
   } else if (textGrowth >= 2 && textPain >= 1) {
     score = 7;
