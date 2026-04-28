@@ -1,0 +1,408 @@
+/* ── Full stage ── */
+.stage {
+  min-height: 100vh;
+  background: #F7F7F7;
+  overflow-y: auto;
+}
+
+.shell {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 56px 28px 80px;
+}
+
+/* ── Progress ── */
+.progressWrap {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(to bottom, #F7F7F7 75%, transparent);
+  padding: 28px 0 18px;
+  z-index: 5;
+}
+
+.progressTrack {
+  position: relative;
+  height: 4px;
+  background: #E8E8E8;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #FF5833;
+  border-radius: 999px;
+  transition: width 0.5s cubic-bezier(.22,.61,.36,1);
+}
+
+.progressMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #AAAAAA;
+}
+
+.stepNum {
+  color: #FF5833;
+  font-weight: 600;
+}
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border: 1px solid #E8E8E8;
+  border-radius: 16px;
+  padding: 40px;
+  margin-top: 24px;
+  box-shadow: 0 1px 2px rgba(17,17,17,0.04), 0 4px 16px rgba(17,17,17,0.04);
+}
+
+.h {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px;
+  color: #111;
+}
+
+.sub {
+  color: #666;
+  margin: 0 0 28px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ── Form fields ── */
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+}
+
+.hint {
+  font-size: 12px;
+  color: #AAAAAA;
+}
+
+.input {
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #E8E8E8;
+  background: #F7F7F7;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.06);
+  background: #fff;
+}
+
+.input::placeholder { color: #AAAAAA; }
+
+.textarea {
+  border-radius: 10px;
+  border: 1px solid #E8E8E8;
+  background: #F7F7F7;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111;
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.06);
+  background: #fff;
+}
+
+.textarea::placeholder { color: #AAAAAA; }
+
+/* ── Competitor tag input ── */
+.tagInput {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #F7F7F7;
+  border: 1px solid #E8E8E8;
+  border-radius: 10px;
+  min-height: 46px;
+  align-items: center;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  cursor: text;
+}
+
+.tagInput:focus-within {
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(17,17,17,0.06);
+  background: #fff;
+}
+
+.tagInputInner {
+  flex: 1;
+  min-width: 100px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111;
+  height: 28px;
+}
+
+.compPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 10px;
+  border-radius: 999px;
+  background: #EBEAE8;
+  border: 1px solid #E8E8E8;
+  color: #444;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pillX {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
+  line-height: 1;
+  padding: 0;
+}
+.pillX:hover { background: rgba(0,0,0,0.08); color: #111; }
+
+/* ── Platform cards (step 2) ── */
+.platformGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.platformCard {
+  position: relative;
+  padding: 24px;
+  border: 1.5px solid #E8E8E8;
+  border-radius: 12px;
+  text-align: left;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(.22,.61,.36,1);
+}
+
+.platformCard:hover { border-color: #D8D7D4; transform: translateY(-1px); }
+
+.platform_x.platformSelected     { border-color: #111;     box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+.platform_facebook.platformSelected { border-color: #1877F2; box-shadow: 0 0 0 3px rgba(24,119,242,0.10); }
+
+.platformLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.logo_x        { background: #F2F2F2; color: #111; }
+.logo_facebook { background: #E7F0FE; color: #1877F2; }
+
+.platformName {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #111;
+}
+
+.platformDesc {
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.platformCheck {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+}
+
+.platform_x.platformSelected .platformCheck     { opacity: 1; transform: scale(1); background: #111;     }
+.platform_facebook.platformSelected .platformCheck { opacity: 1; transform: scale(1); background: #1877F2; }
+
+.check_x        { background: #111;     }
+.check_facebook { background: #1877F2; }
+
+/* ── Keyword tabs + pills (step 3) ── */
+.kwTabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #F7F7F7;
+  border-radius: 10px;
+  margin-bottom: 22px;
+}
+
+.kwTab {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #888;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.kwTab:hover:not(.kwTabActive) { color: #111; }
+
+.kwTabActive {
+  background: #fff;
+  color: #111;
+  box-shadow: 0 1px 2px rgba(17,17,17,0.06), 0 2px 6px rgba(17,17,17,0.04);
+}
+
+.kwLoading {
+  padding: 32px;
+  text-align: center;
+  color: #AAAAAA;
+  font-size: 13px;
+}
+
+.kwArea {
+  background: #F7F7F7;
+  border-radius: 10px;
+  padding: 18px;
+  min-height: 140px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.kwPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px 6px 12px;
+  border-radius: 999px;
+  background: #FFF1EC;
+  border: 1px solid #FFD8C7;
+  color: #FF5833;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.kwAddInput {
+  border: 1px dashed #D8D7D4;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #666;
+  outline: none;
+  width: 140px;
+  transition: border-color 0.15s;
+}
+
+.kwAddInput:focus {
+  border-color: #FF5833;
+  color: #111;
+}
+
+.kwAddInput::placeholder { color: #AAAAAA; }
+
+/* ── Footer nav ── */
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.backBtn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #E8E8E8;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.backBtn:hover { background: #F7F7F7; color: #111; }
+
+.continueBtn,
+.launchBtn {
+  padding: 10px 28px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, opacity 0.15s;
+}
+
+.continueBtn {
+  background: #111;
+  color: #fff;
+}
+
+.continueBtn:hover:not(:disabled) { background: #000; transform: translateY(-1px); }
+.continueBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.launchBtn {
+  background: #FF5833;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,88,51,0.35);
+}
+
+.launchBtn:hover { background: #e54820; transform: translateY(-1px); }

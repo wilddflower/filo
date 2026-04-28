@@ -1,5 +1,5 @@
 {
-  "name": "redrover-for-x",
+  "name": "filo",
   "private": true,
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",

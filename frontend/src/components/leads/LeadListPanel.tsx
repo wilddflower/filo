@@ -1,12 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import type { Lead, LeadFilters } from "@/lib/types";
 import { LeadCard } from "./LeadCard";
 import styles from "./LeadListPanel.module.css";
 
 interface Props {
   leads: Lead[];
-  selectedId: string;
+  selectedId: string | null;
   onSelect: (id: string) => void;
   filters: LeadFilters;
   setFilters: (f: LeadFilters) => void;
@@ -14,18 +15,37 @@ interface Props {
 
 const SCORE_OPTIONS = [
   { label: "All", value: "all" },
-  { label: "7–10", value: "hi" },
-  { label: "5–6", value: "md" },
-  { label: "1–4", value: "lo" },
+  { label: "Hot 🔥", value: "hi" },
+  { label: "Warm", value: "md" },
+  { label: "Low", value: "lo" },
 ] as const;
 
-const FOLLOWER_OPTIONS = [
-  { value: "any", label: "Any followers" },
-  { value: "1k", label: "1K+" },
-  { value: "10k", label: "10K+" },
+const PLATFORM_OPTIONS = [
+  { label: "All", value: "all" },
+  { label: "𝕏", value: "x" },
+  { label: "Facebook", value: "facebook" },
 ] as const;
+
+function extractCompetitor(lead: Lead): string | null {
+  return lead.matched.find((kw) => /^[A-Z]/.test(kw)) ?? null;
+}
 
 export function LeadListPanel({ leads, selectedId, onSelect, filters, setFilters }: Props) {
+  const [grouped, setGrouped] = useState(false);
+
+  const clusters = grouped
+    ? leads.reduce<Map<string, Lead[]>>((map, lead) => {
+        const key = extractCompetitor(lead) ?? "Other";
+        if (!map.has(key)) map.set(key, []);
+        map.get(key)!.push(lead);
+        return map;
+      }, new Map())
+    : null;
+
+  const renderCard = (l: Lead, index: number) => (
+    <LeadCard key={l.id} lead={l} selected={selectedId === l.id} onClick={() => onSelect(l.id)} />
+  );
+
   return (
     <div className={styles.col}>
       <div className={styles.filterBar}>
@@ -41,39 +61,44 @@ export function LeadListPanel({ leads, selectedId, onSelect, filters, setFilters
               </button>
             ))}
           </div>
-          <select
-            className={styles.dropdown}
-            value={filters.followers}
-            onChange={(e) => setFilters({ ...filters, followers: e.target.value as LeadFilters["followers"] })}
-          >
-            {FOLLOWER_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+          <div className={styles.segmented}>
+            {PLATFORM_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                className={`${styles.seg} ${filters.platform === opt.value ? styles.active : ""}`}
+                onClick={() => setFilters({ ...filters, platform: opt.value as LeadFilters["platform"] })}
+              >
+                {opt.label}
+              </button>
             ))}
-          </select>
-        </div>
-        <div className={styles.filterMeta}>
-          <span>{leads.length} leads match your filters</span>
-          <span className={styles.live}>
-            <span className={styles.liveDot} /> Live · updated 2m ago
-          </span>
+          </div>
+          <button
+            className={`${styles.groupToggle} ${grouped ? styles.groupToggleActive : ""}`}
+            onClick={() => setGrouped((g) => !g)}
+            title="Group by competitor"
+          >
+            {grouped ? "Grouped ✓" : "Group"}
+          </button>
+          <span className={styles.count}>{leads.length} signals</span>
         </div>
       </div>
 
       <div className={styles.list}>
-        {leads.map((l) => (
-          <LeadCard
-            key={l.id}
-            lead={l}
-            selected={selectedId === l.id}
-            onClick={() => onSelect(l.id)}
-          />
-        ))}
         {leads.length === 0 && (
-          <div className={styles.empty}>
-            <div className={styles.emptyTitle}>No leads match your filters</div>
-            <div className={styles.emptySub}>Try adjusting your score filter or time range</div>
-          </div>
+          <div className={styles.empty}>No leads match this filter</div>
         )}
+
+        {!grouped && leads.map((l, i) => renderCard(l, i))}
+
+        {grouped && clusters && Array.from(clusters.entries()).map(([competitor, group]) => (
+          <div key={competitor}>
+            <div className={styles.clusterHead}>
+              {competitor === "Other" ? "Other" : `Switching from ${competitor}`}
+              <span className={styles.clusterCount}>{group.length}</span>
+            </div>
+            {group.map((l, i) => renderCard(l, i))}
+          </div>
+        ))}
       </div>
     </div>
   );

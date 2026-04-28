@@ -9,6 +9,7 @@ RedRover for X — AI-powered buyer intent agent for X (Twitter). Monitors X pos
 ## Commands
 
 ### Frontend (Next.js — port 3000)
+
 ```bash
 cd frontend
 npm install
@@ -19,6 +20,7 @@ npm run lint       # ESLint
 ```
 
 ### Backend (Node.js/Express — port 3001)
+
 ```bash
 cd backend
 npm install
@@ -32,6 +34,7 @@ Both must run simultaneously for the full app. Frontend proxies `/api/*` → `ht
 ## Architecture
 
 ### Frontend (`frontend/src/`)
+
 - **App Router** (`app/`) — pages: `/dashboard`, `/analytics`, `/saved`, `/settings`. Root redirects to `/dashboard`.
 - **`components/layout/AppShell`** — outer chrome: floating left icon rail + top nav pill bar. Wraps every page. Active page is passed as a prop.
 - **`components/leads/`** — core feature components:
@@ -44,11 +47,13 @@ Both must run simultaneously for the full app. Frontend proxies `/api/*` → `ht
 - **Styling** — CSS Modules (`.module.css` per component) + `styles/globals.css` for design tokens. Design language: glassy frosted surfaces (`backdrop-filter: blur`), `--accent: #FF5833` orange-red, Geist font, `oklch()` avatar gradients.
 
 ### Backend (`backend/src/`)
+
 - **`data/mockPosts.ts`** — 12 hardcoded `XPost` objects (10 high-signal buying intent + 2 low-signal noise), plus `INTENT_KEYWORDS` array.
 - **`services/intentScorer.ts`** — rule-based scorer for MVP. Produces score (1–10), confidence level, matched keywords, and rationale bullets. Scoring factors: keyword match, competitor mention, follower count, ICP bio keywords, urgency terms. **Replace with Claude API call in next iteration.**
 - **Routes**: `GET /api/leads` returns all posts scored + sorted; `POST /api/scoring` scores an arbitrary post body; `GET /api/health`.
 
 ### Key design decisions
+
 - **No auto-posting** — a hard constraint from the PRD. All reply/DM actions are copy-to-clipboard only. The `LeadDetail` component enforces this with a visible disclaimer.
 - **Score tiers**: `hi` = 7–10 (accent red), `md` = 4–6 (amber), `lo` = 1–3 (grey). Used for card color coding and filter segmented control.
 - **Intent scorer is swappable** — the `scorePost(post: XPost): ScoredPost` interface in `intentScorer.ts` is designed so the rule-based logic can be replaced with a Claude API call without changing any routes or frontend types.
@@ -62,6 +67,7 @@ results than an ad-hoc answer. When in doubt, invoke the skill. A false positive
 cheaper than a false negative.
 
 Key routing rules:
+
 - Product ideas, "is this worth building", brainstorming → invoke /office-hours
 - Strategy, scope, "think bigger", "what should we build" → invoke /plan-ceo-review
 - Architecture, "does this design make sense" → invoke /plan-eng-review

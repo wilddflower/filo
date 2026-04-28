@@ -1,21 +1,27 @@
 {
-  "name": "redrover-backend",
+  "name": "filo-backend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "nodemon --exec \"tsx src/index.ts\" --ext ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "mega-scrape": "tsx scripts/mega-scrape.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.0",
     "cors": "^2.8.5",
-    "express": "^4.21.0"
+    "dotenv": "^17.4.2",
+    "express": "^4.21.0",
+    "groq-sdk": "^1.1.2",
+    "playwright": "^1.59.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22",
+    "nodemon": "^3.1.14",
     "tsx": "^4.19.0",
     "typescript": "^5"
   }

@@ -1,4 +1,22 @@
 export type ScoreTier = "hi" | "md" | "lo";
+export type Platform = "x" | "facebook";
+export type PostCategory = "Lead Finding" | "Competitor Analysis" | "Market Research";
+
+export interface FounderProfile {
+  name: string;
+  company: string;
+  productDescription: string;
+  competitors: string[];
+  style: string;
+  promoCode: string;
+  url: string;
+}
+
+export interface Keywords {
+  leadFinding: string[];
+  competitorAnalysis: string[];
+  marketResearch: string[];
+}
 export type Confidence = "high" | "med" | "low";
 export type Tone = "helpful" | "informative" | "promotional";
 export type SavedStatus = "new" | "reached-out" | "replied" | "waiting" | "converted" | "not-interested";
@@ -31,6 +49,8 @@ export interface Lead {
   isReply: boolean;
   rationale: Rationale[];
   recentPosts: string[];
+  platform: Platform;
+  groupName?: string;
 }
 
 export interface SavedLead {
@@ -45,4 +65,5 @@ export interface LeadFilters {
   score: "all" | ScoreTier;
   time: "1h" | "6h" | "today" | "week";
   followers: "any" | "100" | "1k" | "10k";
+  platform: "all" | Platform;
 }

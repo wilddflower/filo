@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm install *)",
+      "Bash(curl -s -X POST http://localhost:3001/api/reply -H \"Content-Type: application/json\" -d \"{\\\\\"postText\\\\\":\\\\\"Looking for a Sprout Social alternative\\\\\",\\\\\"authorName\\\\\":\\\\\"Test User\\\\\",\\\\\"authorBio\\\\\":\\\\\"Head of Growth\\\\\",\\\\\"recentPosts\\\\\":[\\\\\"We cut our tool stack last month\\\\\"],\\\\\"tone\\\\\":\\\\\"helpful\\\\\",\\\\\"tab\\\\\":\\\\\"reply\\\\\"}\")",
+      "Bash(curl -s -X POST http://localhost:3001/api/reply -H \"Content-Type: application/json\" -d \"{\\\\\"postText\\\\\":\\\\\"Sprout Social just raised prices 22%\\\\\",\\\\\"authorName\\\\\":\\\\\"Hannah Gleeson\\\\\",\\\\\"authorBio\\\\\":\\\\\"Head of Demand Gen\\\\\",\\\\\"recentPosts\\\\\":[\\\\\"Q2 pipeline review\\\\\"],\\\\\"tone\\\\\":\\\\\"helpful\\\\\",\\\\\"tab\\\\\":\\\\\"reply\\\\\",\\\\\"founderProfile\\\\\":null}\")",
+      "Read(//c/Users/Pavni/.claude/**)",
+      "Bash(./setup)",
+      "Bash(command -v bun)",
+      "Bash(npm --version)",
+      "Bash(bun --version)",
+      "Bash(git -C c:/Users/Pavni/filo log --oneline -10)",
+      "Bash(~/.claude/skills/gstack/bin/gstack-builder-profile)",
+      "Bash(git -C c:/Users/Pavni/filo diff HEAD --stat)",
+      "Bash(~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"autoplan\",\"event\":\"completed\",\"branch\":\"main\",\"outcome\":\"success\",\"duration_s\":\"estimated\",\"session\":\"autoplan-session\"}')",
+      "Bash(~/.claude/skills/gstack/bin/gstack-brain-sync --discover-new)",
+      "Bash(npx tsc *)",
+      "Bash(npx kill-port *)",
+      "Bash(curl -s -X POST http://localhost:3001/api/leads/search -H \"Content-Type: application/json\" -d \"{\\\\\"keywords\\\\\":{\\\\\"leadFinding\\\\\":[\\\\\"looking for tool\\\\\"],\\\\\"competitorAnalysis\\\\\":[\\\\\"alternative to\\\\\"],\\\\\"marketResearch\\\\\":[\\\\\"recommendations\\\\\"]}}\")",
+      "Bash(node -e \"require\\('dotenv/config'\\); console.log\\('TOKEN:', process.env.APIFY_TOKEN ? 'SET \\(' + process.env.APIFY_TOKEN.slice\\(0,12\\) + '...\\)' : 'NOT SET'\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('source:', d.get\\('source'\\)\\); print\\('lead count:', len\\(d.get\\('leads',[]\\)\\)\\);print\\('first lead id:', d['leads'][0]['id'] if d.get\\('leads'\\) else 'none'\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"require\\('dotenv/config'\\); const token = process.env.APIFY_TOKEN; fetch\\('https://api.apify.com/v2/acts/apidojo~tweet-scraper/run-sync-get-dataset-items?token=' + token, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify\\({ searchTerms: ['looking for social tool'], maxItems: 3, queryType: 'Latest' }\\), signal: AbortSignal.timeout\\(35000\\) }\\).then\\(r => { console.log\\('Status:', r.status\\); return r.text\\(\\); }\\).then\\(t => console.log\\('Body:', t.slice\\(0,300\\)\\)\\).catch\\(e => console.error\\('Error:', e.message\\)\\);\")",
+      "Bash(node -e \"require\\('dotenv/config'\\); const token = process.env.APIFY_TOKEN; fetch\\('https://api.apify.com/v2/acts/apidojo~tweet-scraper/run-sync-get-dataset-items?token=' + token, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify\\({ searchTerms: ['social media tool OR Sprout Social alternative OR social listening'], maxItems: 5, queryType: 'Latest' }\\), signal: AbortSignal.timeout\\(35000\\) }\\).then\\(r => r.json\\(\\)\\).then\\(items => { const real = items.filter\\(i => !i.noResults && i.text\\); console.log\\('Real tweets:', real.length\\); if\\(real[0]\\) console.log\\('Sample:', JSON.stringify\\(real[0]\\).slice\\(0,400\\)\\); }\\).catch\\(e => console.error\\('Error:', e.message\\)\\);\")",
+      "Bash(node -e \"require\\('dotenv/config'\\); const token = process.env.APIFY_TOKEN; fetch\\('https://api.apify.com/v2/acts/apidojo~tweet-scraper/run-sync-get-dataset-items?token=' + token, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify\\({ searchTerms: ['startup'], maxItems: 5 }\\), signal: AbortSignal.timeout\\(35000\\) }\\).then\\(r => r.json\\(\\)\\).then\\(items => { console.log\\('Total items:', items.length\\); console.log\\('First item keys:', Object.keys\\(items[0] || {}\\)\\); console.log\\('First item:', JSON.stringify\\(items[0]\\).slice\\(0,300\\)\\); }\\).catch\\(e => console.error\\('Error:', e.message\\)\\);\")",
+      "Bash(node -e \"require\\('dotenv/config'\\); const token = process.env.APIFY_TOKEN; fetch\\('https://api.apify.com/v2/acts/apidojo~tweet-scraper/run-sync-get-dataset-items?token=' + token, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify\\({ startUrls: ['https://twitter.com/search?q=social+listening+tool&src=typed_query&f=live'], maxItems: 5 }\\), signal: AbortSignal.timeout\\(35000\\) }\\).then\\(r => r.json\\(\\)\\).then\\(items => { const real = items.filter\\(i => !i.noResults && i.text\\); console.log\\('Total:', items.length, 'Real:', real.length\\); if\\(real[0]\\) console.log\\('Sample:', JSON.stringify\\(real[0]\\).slice\\(0,500\\)\\); else console.log\\('First raw:', JSON.stringify\\(items[0]\\)\\); }\\).catch\\(e => console.error\\('Error:', e.message\\)\\);\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(time curl *)",
+      "Bash(git add *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\Pavni\\.gstack"
+    ]
+  }
+}

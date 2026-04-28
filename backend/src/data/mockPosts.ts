@@ -8,9 +8,9 @@ export interface XPost {
   authorBio: string;
   createdAt: string;
   metrics: { likes: number; retweets: number; replies: number };
+  recentPosts: string[];
 }
 
-// Hardcoded sample X posts with buying signals for MVP
 export const SAMPLE_POSTS: XPost[] = [
   {
     id: "post_001",
@@ -22,6 +22,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Head of Growth at Pocketbook (B2B fintech, Series A).",
     createdAt: "2026-04-17T14:41:00Z",
     metrics: { likes: 38, retweets: 4, replies: 22 },
+    recentPosts: [
+      "We moved our onboarding from 7 steps to 3 and activation jumped 22%. Simplicity is a growth lever people underestimate.",
+      "If your dashboard needs a tutorial, the dashboard is broken.",
+      "Cold DMs from SDRs who clearly didn't read my bio are the spam of 2026. Do better.",
+    ],
   },
   {
     id: "post_002",
@@ -33,6 +38,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Founder & CEO at Lumiwork (remote productivity). Ex-Asana PM.",
     createdAt: "2026-04-17T14:17:00Z",
     metrics: { likes: 64, retweets: 11, replies: 31 },
+    recentPosts: [
+      "Building in public day 47: shipped async standup for distributed teams. Zero meetings this week. Productivity is up, nobody misses Zoom.",
+      "The best GTM motion for early-stage B2B is founder-led sales. Nobody can sell your vision better than you.",
+      "Remote teams don't fail because of timezone gaps. They fail because of unclear ownership.",
+    ],
   },
   {
     id: "post_003",
@@ -44,6 +54,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Marketing Lead · Series B SaaS · coffee, reading, very tired parent.",
     createdAt: "2026-04-17T13:52:00Z",
     metrics: { likes: 12, retweets: 1, replies: 9 },
+    recentPosts: [
+      "Content calendar shipped. 3 weeks of posts scheduled. Now I can focus on pipeline. Small wins.",
+      "Competitor just dropped pricing. Do we match? Do we differentiate? This week's fun strategy puzzle.",
+      "Why does every B2B tool have a 45-minute onboarding call requirement? Just let me try the thing.",
+    ],
   },
   {
     id: "post_004",
@@ -55,6 +70,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Agency owner · Two Ravens Digital · managing social for 14 brands.",
     createdAt: "2026-04-17T12:40:00Z",
     metrics: { likes: 28, retweets: 3, replies: 14 },
+    recentPosts: [
+      "Managing social for 14 brands means I live and die by bulk scheduling. Any tool that breaks that workflow costs me hours every week.",
+      "Onboarded two new clients this month. The hardest part isn't the work — it's syncing on brand voice across a distributed team.",
+      "Agency life: your client posts go viral on the one day you forget to check notifications.",
+    ],
   },
   {
     id: "post_005",
@@ -66,6 +86,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Head of Demand Gen · Turnkey HR · B2B SaaS",
     createdAt: "2026-04-17T08:14:00Z",
     metrics: { likes: 51, retweets: 7, replies: 18 },
+    recentPosts: [
+      "Q2 pipeline review: social-sourced leads converted 2x better than paid. Time to double down on social listening.",
+      "The SDR team is asking for better lead scoring. Current system flags everything, which means nothing gets prioritized.",
+      "Intent data is the unlock for outbound. Stop cold calling and start warm calling.",
+    ],
   },
   {
     id: "post_006",
@@ -77,6 +102,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Indie maker · building hammock.dev · solo.",
     createdAt: "2026-04-17T11:31:00Z",
     metrics: { likes: 19, retweets: 2, replies: 8 },
+    recentPosts: [
+      "hammock.dev hit $1,200 MRR this month. Slow but real. Solo building is a long game.",
+      "I refuse to pay $500/mo for a tool I'll use 2 hours a week. Indie budget is real.",
+      "The best tools are ones that get out of your way. Looking at you, every enterprise SaaS ever.",
+    ],
   },
   {
     id: "post_007",
@@ -88,6 +118,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Growth @ Relay Labs · B2B SaaS · Ex-Klaviyo",
     createdAt: "2026-04-17T06:45:00Z",
     metrics: { likes: 15, retweets: 1, replies: 6 },
+    recentPosts: [
+      "Growth at a Series A is 80% prioritization. You can't do everything, so you have to be ruthless about what moves the needle.",
+      "Klaviyo taught me: if you can't measure it, you can't scale it. Brings that lens to everything now.",
+      "We're experimenting with social-led outbound this quarter. Early signals are promising — people respond when you're relevant.",
+    ],
   },
   {
     id: "post_008",
@@ -99,6 +134,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "RevOps @ Gridline · formerly Salesforce admin for 6 years",
     createdAt: "2026-04-17T15:03:00Z",
     metrics: { likes: 33, retweets: 5, replies: 17 },
+    recentPosts: [
+      "RevOps hot take: most CRM data is garbage because nobody owns data hygiene. Fix the process before buying more tools.",
+      "Just rebuilt our Salesforce lead routing logic. Cut assignment time from 4 hours to 11 minutes.",
+      "If your sales tool doesn't have a native Salesforce integration in 2026, I'm not evaluating it. Full stop.",
+    ],
   },
   {
     id: "post_009",
@@ -110,6 +150,11 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Head of Sales · Formstack · closing deals since 2019",
     createdAt: "2026-04-17T09:30:00Z",
     metrics: { likes: 44, retweets: 8, replies: 26 },
+    recentPosts: [
+      "Best cold outreach I got this year referenced something I posted 3 months ago. That's the bar now.",
+      "Sales tip: ask 'what would make this a no-brainer?' earlier in the call. Saves everyone time.",
+      "We closed a $40k deal that started with a Twitter reply. Social selling is real, people just don't do it consistently.",
+    ],
   },
   {
     id: "post_010",
@@ -121,8 +166,12 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "CEO @ Relay.so · building async video for remote teams",
     createdAt: "2026-04-17T07:15:00Z",
     metrics: { likes: 27, retweets: 3, replies: 11 },
+    recentPosts: [
+      "We're 15 people and already drowning in SaaS subscriptions. Every tool needs to earn its seat at the table.",
+      "Async video cut our meeting load by 40%. Now if I could just fix our social monitoring workflow.",
+      "Hiring for a growth role. The hardest part is finding someone who can both think strategically and get in the weeds.",
+    ],
   },
-  // Low-signal / noise posts for model training variety
   {
     id: "post_011",
     text: "Any good taquerías in Oakland? Working from a co-working there Friday.",
@@ -133,6 +182,10 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Engineer · backend",
     createdAt: "2026-04-17T07:23:00Z",
     metrics: { likes: 4, retweets: 0, replies: 11 },
+    recentPosts: [
+      "Finished migrating our API to Rust. 3x throughput, half the memory. Worth every painful weekend.",
+      "Hot take: monorepos are fine. The problem is people treating them like microrepos.",
+    ],
   },
   {
     id: "post_012",
@@ -144,6 +197,10 @@ export const SAMPLE_POSTS: XPost[] = [
     authorBio: "Creator · fashion · 340k TikTok",
     createdAt: "2026-04-17T09:02:00Z",
     metrics: { likes: 8, retweets: 0, replies: 3 },
+    recentPosts: [
+      "New haul just dropped. Spring 2026 trends I'm actually obsessed with.",
+      "Behind the scenes of my editing workflow — how I batch 30 videos in a weekend.",
+    ],
   },
 ];
 

@@ -1,5 +1,6 @@
+import Groq from "groq-sdk";
 import type { XPost } from "../data/mockPosts";
-import { INTENT_KEYWORDS } from "../data/mockPosts";
+import type { Keywords } from "../types";
 
 export interface ScoredPost {
   post: XPost;
@@ -9,67 +10,209 @@ export interface ScoredPost {
   rationale: { tag: string; text: string }[];
 }
 
-// Rule-based intent scorer for MVP — replace with Claude API in production
-export function scorePost(post: XPost): ScoredPost {
-  const text = post.text.toLowerCase();
-  const matchedKeywords = INTENT_KEYWORDS.filter((kw) => text.includes(kw.toLowerCase()));
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-  let score = 0;
-  const rationale: { tag: string; text: string }[] = [];
+// Try models in order — each has its own daily quota
+const MODELS = [
+  "llama-3.1-8b-instant",    // 500k/day — primary (unlikely to be exhausted)
+  "llama-3.3-70b-specdec",   // 2nd fallback
+  "llama-3.3-70b-versatile", // original (may be exhausted)
+];
 
-  // Keyword signals (0–4 pts)
-  if (matchedKeywords.length > 0) {
-    const pts = Math.min(matchedKeywords.length * 2, 4);
-    score += pts;
-    rationale.push({ tag: "Intent", text: `Matched intent keywords: ${matchedKeywords.join(", ")}` });
-  }
+export async function scorePost(post: XPost): Promise<ScoredPost> {
+  const prompt = `You are a growth intelligence assistant for Clover Labs, which builds AI-powered growth agents that help founders get distribution for their B2C products.
 
-  // Competitor mention (0–2 pts)
-  const competitors = ["sprout", "hootsuite", "brandwatch", "mention", "buffer", "hubspot", "salesforce"];
-  const mentionedCompetitors = competitors.filter((c) => text.includes(c));
-  if (mentionedCompetitors.length > 0) {
-    score += 2;
-    rationale.push({ tag: "Switch", text: `Competitor mentioned: ${mentionedCompetitors.join(", ")} — churn signal` });
-  }
+Analyze this X (Twitter) post and score how likely the author is a founder who is struggling with growth, user acquisition, or distribution — and would benefit from an AI growth agent.
 
-  // Follower authority (0–1 pt)
-  if (post.authorFollowers >= 1000) {
-    score += 1;
-    rationale.push({ tag: "Authority", text: `${post.authorFollowers.toLocaleString()} followers — credible signal` });
-  }
+Post: "${post.text}"
+Author bio: "${post.authorBio}"
+Followers: ${post.authorFollowers}
 
-  // ICP role signal from bio (0–2 pts)
-  const icpKeywords = ["founder", "ceo", "head of", "vp", "growth", "marketing", "sales", "demand gen"];
-  const icpMatch = icpKeywords.find((k) => post.authorBio.toLowerCase().includes(k));
-  if (icpMatch) {
-    score += 2;
-    rationale.push({ tag: "Role", text: `Bio signal: ${icpMatch} — matches buyer ICP` });
-  }
-
-  // Urgency signal (0–1 pt)
-  const urgencyTerms = ["this month", "this quarter", "asap", "today", "urgently", "right now"];
-  const urgencyMatch = urgencyTerms.find((t) => text.includes(t));
-  if (urgencyMatch) {
-    score += 1;
-    rationale.push({ tag: "Urgency", text: `Time signal: "${urgencyMatch}" — near-term decision` });
-  }
-
-  // Off-topic penalty: no ICP keywords and no competitor mentions = likely noise
-  if (matchedKeywords.length === 0 && mentionedCompetitors.length === 0) {
-    score = Math.max(score - 2, 1);
-    rationale.push({ tag: "Mismatch", text: "No intent keywords or competitor mentions detected" });
-  }
-
-  score = Math.min(Math.max(score, 1), 10);
-
-  const confidence: "high" | "med" | "low" =
-    score >= 7 ? "high" : score >= 5 ? "med" : "low";
-
-  return { post, score, confidence, matchedKeywords, rationale };
+Respond ONLY with valid JSON in this exact shape:
+{
+  "score": <integer 1-10>,
+  "matchedKeywords": [<phrases that signal founder growth pain>],
+  "rationale": [
+    { "tag": "<Pain|Stage|ICP|Urgency|Mismatch>", "text": "<one sentence>" }
+  ]
 }
 
-export function scoreAll(posts: XPost[]): ScoredPost[] {
-  return posts
-    .map(scorePost)
-    .sort((a, b) => b.score - a.score);
+Scoring guide:
+- 8-10: founder explicitly struggling to get users or traction, asking for growth help, has a real product, expresses urgency or frustration
+- 5-7: anyone building something, sharing growth lessons learned, discussing distribution challenges, asking for advice — even if not in active pain right now
+- 4: mentions growth, distribution, getting users, or launch — loosely relevant
+- 1-3: pure advice/thought-leadership accounts, B2B enterprise focus, no product being built, completely off-topic
+
+Be generous with 4-6. When in doubt, round up. We prefer false positives over missing real founders.`;
+
+  for (const model of MODELS) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+        max_tokens: 400,
+      });
+
+      const raw = completion.choices[0]?.message?.content ?? "";
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No JSON in response");
+
+      const parsed = JSON.parse(jsonMatch[0]);
+      const score = Math.min(Math.max(Number(parsed.score) || 1, 1), 10);
+
+      return {
+        post,
+        score,
+        confidence: score >= 7 ? "high" : score >= 5 ? "med" : "low",
+        matchedKeywords: parsed.matchedKeywords ?? [],
+        rationale: parsed.rationale ?? [],
+      };
+    } catch (err: unknown) {
+      const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+      const isRateLimit = msg.includes("rate limit") || msg.includes("429") || msg.includes("quota");
+      if (isRateLimit && model !== MODELS[MODELS.length - 1]) {
+        console.warn(`[scorer] ${model} rate-limited, trying ${MODELS[MODELS.indexOf(model) + 1]}...`);
+        continue;
+      }
+      // Non-rate-limit error or all models exhausted → rule-based fallback
+      return fallbackScore(post);
+    }
+  }
+  return fallbackScore(post);
+}
+
+export async function scoreAll(posts: XPost[]): Promise<ScoredPost[]> {
+  const BATCH = 10;
+  const results: ScoredPost[] = [];
+  for (let i = 0; i < posts.length; i += BATCH) {
+    const batch = posts.slice(i, i + BATCH);
+    const batchResults = await Promise.all(batch.map(scorePost));
+    results.push(...batchResults);
+    if (i + BATCH < posts.length) {
+      await new Promise((r) => setTimeout(r, 100));
+    }
+  }
+  return results.sort((a, b) => b.score - a.score);
+}
+
+// Rule-based pre-filter: scores every post cheaply, returns top N candidates for Groq scoring.
+export function quickFilter(posts: XPost[], keywords: Keywords, limit: number): XPost[] {
+  const allKw = [
+    ...keywords.leadFinding,
+    ...keywords.competitorAnalysis,
+    ...keywords.marketResearch,
+  ].map((k) => k.toLowerCase());
+
+  const INTENT_SIGNALS = [
+    "looking for", "need a", "recommend", "alternative", "switching from",
+    "replacing", "best tool", "anyone use", "tried", "comparison", "vs ",
+    "frustrat", "annoyed with", "problem with", "help with", "anyone know",
+    "suggestions", "advice", "which is better", "worth it", "budget for",
+    "deciding between", "evaluating", "demo", "free trial", "pricing",
+  ];
+
+  const scored = posts.map((post) => {
+    const lower = post.text.toLowerCase();
+    const kwHits = allKw.filter((k) => lower.includes(k)).length;
+    const signalHits = INTENT_SIGNALS.filter((s) => lower.includes(s)).length;
+    const engagementBoost = Math.log1p(post.metrics.likes + post.metrics.retweets) * 0.5;
+    const priority = kwHits * 3 + signalHits * 2 + engagementBoost;
+    return { post, priority };
+  });
+
+  return scored
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, limit)
+    .map((s) => s.post);
+}
+
+export { fallbackScore as ruleScore };
+
+// Founder-growth rule-based fallback — used when all Groq models are rate-limited.
+// Scores generously so the dashboard stays full during API outages.
+function fallbackScore(post: XPost): ScoredPost {
+  const text = post.text.toLowerCase();
+  const bio = (post.authorBio ?? "").toLowerCase();
+
+  const HIGH_PAIN = [
+    "can't get users", "no one is using", "struggling to grow", "need more users",
+    "0 users", "zero users", "no traction", "nobody signing up", "still no traction",
+    "first 100 users", "getting first users", "can't find users", "hard to get users",
+    "nobody cares", "crickets", "ghost town", "struggling with growth",
+    "nobody wants", "nobody buys", "no conversions", "no signups",
+  ];
+
+  // Specific multi-word phrases only — avoids false matches on common words
+  const FOUNDER_GROWTH = [
+    // identity (specific enough alone)
+    "indie hacker", "indiehacker", "solo founder", "co-founder", "bootstrapped",
+    // growth / distribution phrases
+    "user acquisition", "getting traction", "go-to-market", "gtm",
+    "growth hack", "word of mouth", "product market fit", "pmf",
+    "organic growth", "viral loop", "viral coefficient",
+    // channels (specific combos)
+    "cold email", "cold outreach", "cold dm",
+    "landing page", "waitlist", "early adopters", "early users",
+    "launch strategy", "pre-launch", "product hunt", "hacker news", "show hn",
+    // stages / metrics
+    "paying customers", "first customers", "getting customers",
+    "mrr", "arr", "burn rate", "ramen profitable", "default alive",
+    "churn rate", "activation rate",
+    // tweet phrases (whole phrases, not single words)
+    "i built", "i made", "just launched", "just shipped", "we launched",
+    "my startup", "my saas", "my indie",
+    "day 1 of", "week 1 of", "building in public",
+  ];
+
+  const FOUNDER_BIO = [
+    "founder", "co-founder", "indie hacker", "indiehacker",
+    "bootstrapped", "building in public", "solopreneur",
+  ];
+
+  const PAIN_SIGNALS = [
+    "how do i get", "how to get more", "how to find customers",
+    "struggling with", "stuck on", "frustrated with",
+    "what works for", "any suggestions", "anyone tried",
+    "what am i doing wrong", "tried everything", "nothing is working",
+    "plateau", "stagnant growth",
+  ];
+
+  const highPainHits = HIGH_PAIN.filter((k) => text.includes(k)).length;
+  const growthHits = FOUNDER_GROWTH.filter((k) => text.includes(k) || bio.includes(k)).length;
+  const painHits = PAIN_SIGNALS.filter((k) => text.includes(k)).length;
+  const founderBio = FOUNDER_BIO.some((k) => bio.includes(k));
+
+  let score: number;
+  if (highPainHits >= 1) {
+    score = 8;
+  } else if (growthHits >= 4 && painHits >= 1) {
+    score = 7;
+  } else if (growthHits >= 3 && painHits >= 1) {
+    score = 7;
+  } else if (growthHits >= 2 && painHits >= 1) {
+    score = 6;
+  } else if (growthHits >= 3) {
+    score = 5;
+  } else if (growthHits >= 2) {
+    score = 5;
+  } else if (growthHits >= 1 && painHits >= 1) {
+    score = 5;
+  } else if (growthHits >= 1 || (founderBio && painHits >= 1)) {
+    score = 4;
+  } else if (founderBio && growthHits === 0) {
+    score = 3;
+  } else {
+    score = 2;
+  }
+
+  const matched = [...HIGH_PAIN, ...FOUNDER_GROWTH, ...PAIN_SIGNALS].filter((k) => text.includes(k));
+
+  return {
+    post,
+    score,
+    confidence: score >= 7 ? "high" : score >= 5 ? "med" : "low",
+    matchedKeywords: matched.slice(0, 5),
+    rationale: [{ tag: "Fallback", text: "Rule-based score (LLM temporarily unavailable)" }],
+  };
 }

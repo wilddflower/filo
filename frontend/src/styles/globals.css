@@ -44,6 +44,25 @@
   --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/* ── Facebook platform theme ──────────────────────────────── */
+:root[data-platform="facebook"] {
+  --accent:        #1877F2;
+  --accent-ink:    #1264CC;
+  --accent-soft:   #E7F0FE;
+  --accent-soft-2: #EEF4FF;
+  --accent-hover:  #2185F4;
+}
+
+:root[data-platform="facebook"] body::before {
+  background:
+    radial-gradient(620px 420px at 8% 6%,   rgba(24,119,242,0.10), transparent 60%),
+    radial-gradient(520px 380px at 96% 12%,  rgba(91,156,255,0.08), transparent 65%),
+    radial-gradient(680px 500px at 82% 94%,  rgba(24,119,242,0.06), transparent 60%),
+    radial-gradient(420px 320px at 18% 88%,  rgba(80,50,200,0.05),  transparent 65%);
+}
+
+/* ── X platform: keep orange (default) ─────────────────────── */
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; overflow-x: hidden; }
 body {

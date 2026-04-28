@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "RedRover for X",
+  title: "Filo",
   description: "AI-powered buyer intent agent for X (Twitter)",
 };
 

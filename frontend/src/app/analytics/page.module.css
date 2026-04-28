@@ -1,0 +1,353 @@
+/* ── Shell ── */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #F7F7F7;
+}
+
+/* ── Topbar / header ── */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid #E8E8E8;
+  padding: 20px 28px 0;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.topbarLeft { display: flex; flex-direction: column; gap: 2px; }
+
+.breadcrumb {
+  font-size: 12px;
+  color: #AAAAAA;
+  margin-bottom: 6px;
+}
+.breadcrumb span { margin: 0 5px; }
+
+.greetRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.greetEmoji { font-size: 28px; line-height: 1; }
+
+.greet {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #111;
+  margin: 0;
+}
+
+.greetName {
+  color: var(--accent);
+  transition: color 0.4s ease;
+}
+
+.greetSub {
+  font-size: 13px;
+  color: #888;
+  margin: 4px 0 0;
+}
+
+.dateRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #E8E8E8;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #555;
+  background: #FAFAFA;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+
+/* ── Tabs ── */
+.tabRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 0 28px;
+  background: #fff;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.tabDivider {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #E8E8E8;
+}
+
+.tabBtn {
+  position: relative;
+  z-index: 1;
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #888;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.tabBtn:hover { color: #111; }
+
+.tabActive {
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.4s ease;
+}
+
+.tabActive::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+  transition: background 0.4s ease;
+}
+
+/* ── Content ── */
+.loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #AAAAAA;
+  font-size: 14px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ── Stat grid ── */
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+/* ── Stat card ── */
+.statCard {
+  position: relative;
+  background: linear-gradient(170deg, #FFFFFF 0%, #FCFBF9 100%);
+  border: 1px solid #E8E8E8;
+  border-radius: 18px;
+  padding: 18px 20px 14px;
+  box-shadow: 0 1px 3px rgba(17,17,17,0.04), 0 4px 16px rgba(17,17,17,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(17,17,17,0.06), 0 12px 32px rgba(17,17,17,0.08);
+}
+
+/* Shiny gloss overlay */
+.cardGloss {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(160deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 40%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cardTop {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.cardIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.cardTrend {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.cardNum {
+  position: relative;
+  z-index: 2;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #111;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sparkline positioned as background */
+.cardSpark {
+  position: absolute;
+  bottom: 28px;
+  right: 0;
+  width: 130px;
+  height: 52px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.spark {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cardMeta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 28px;
+}
+
+.cardLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+}
+
+.cardSub {
+  font-size: 11.5px;
+  color: #AAAAAA;
+}
+
+/* ── Chart card ── */
+.chartCard {
+  position: relative;
+  background: linear-gradient(170deg, #FFFFFF 0%, #FCFBF9 100%);
+  border: 1px solid #E8E8E8;
+  border-radius: 18px;
+  padding: 22px 24px 18px;
+  box-shadow: 0 1px 3px rgba(17,17,17,0.04), 0 4px 16px rgba(17,17,17,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chartHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.chartTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+
+.chartSub {
+  font-size: 12px;
+  color: #AAAAAA;
+  margin-top: 2px;
+}
+
+.weekChart {
+  width: 100%;
+  height: 130px;
+  display: block;
+}
+
+.chartLabels {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.chartLabels span {
+  font-size: 11px;
+  color: #AAAAAA;
+}
+
+.empty {
+  font-size: 13px;
+  color: #AAAAAA;
+  padding: 24px 0;
+  text-align: center;
+}
+
+/* ── Keyword table ── */
+.kwTable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kwRow {
+  display: grid;
+  grid-template-columns: 170px 1fr 32px;
+  align-items: center;
+  gap: 12px;
+}
+
+.kwName {
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kwTrack {
+  height: 7px;
+  background: #EBEAE8;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.kwBar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 600ms cubic-bezier(0.4,0,0.2,1), background 0.4s ease;
+  min-width: 3px;
+}
+
+.kwCount {
+  font-size: 12px;
+  color: #AAAAAA;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
