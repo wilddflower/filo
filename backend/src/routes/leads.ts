@@ -65,11 +65,9 @@ function mapToLead(scored: ScoredPost, keywords: Keywords): Lead {
 function buildRuleLeads(posts: XPost[], keywords: Keywords): Lead[] {
   const scored = posts.map(ruleScore);
   const sorted = scored.sort((a, b) => b.score - a.score);
-  const good = sorted.filter((s) => s.score >= 4);
-  const filler = sorted.filter((s) => s.score === 3);
-  // Always include filler to pad up to MIN_LEADS; cap total at 300 to stay snappy
-  const needed = Math.max(MIN_LEADS - good.length, 0);
-  const combined = [...good, ...filler.slice(0, needed)].slice(0, 300);
+  // Only include score >= 4 — score-3 posts (bio-only match, no growth signal in tweet)
+  // are too noisy to show. Quality > hitting a minimum count.
+  const combined = sorted.filter((s) => s.score >= 4).slice(0, 300);
   return combined.map((s) => mapToLead(s, keywords));
 }
 
@@ -79,10 +77,7 @@ function triggerGroqBackground(posts: XPost[], keywords: Keywords, hash: string)
   const candidates = quickFilter(posts, keywords, GROQ_LIMIT);
   scoreAll(candidates)
     .then((scored) => {
-      const good = scored.filter((s) => s.score >= 4);
-      const filler = scored.filter((s) => s.score === 3);
-      const needed = Math.max(MIN_LEADS - good.length, 0);
-      const combined = [...good, ...filler.slice(0, needed)];
+      const combined = scored.filter((s) => s.score >= 4);
       groqCache = combined.map((s) => mapToLead(s, keywords));
       groqCacheHash = hash;
       console.log(`[leads] Groq background done — ${groqCache.length} leads scored`);

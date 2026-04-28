@@ -38,12 +38,12 @@ Respond ONLY with valid JSON in this exact shape:
 }
 
 Scoring guide:
-- 8-10: founder explicitly struggling to get users or traction, asking for growth help, has a real product, expresses urgency or frustration
-- 5-7: anyone building something, sharing growth lessons learned, discussing distribution challenges, asking for advice — even if not in active pain right now
-- 4: mentions growth, distribution, getting users, or launch — loosely relevant
-- 1-3: pure advice/thought-leadership accounts, B2B enterprise focus, no product being built, completely off-topic
+- 8-10: founder explicitly struggling to get users, traction, or growth RIGHT NOW — active pain, urgency, or frustration with distribution
+- 6-7: founder actively building something + talking about growth challenges, acquisition, launching, or distribution — even if not in crisis
+- 4-5: clearly a founder/indie hacker + mentions growth, users, launch, or distribution in a relevant way
+- 1-3: general advice tweets, thought leadership with no product, B2B enterprise focus, sports/entertainment/unrelated topics, or someone who just has "founder" in bio but the tweet is completely off-topic
 
-Be generous with 4-6. When in doubt, round up. We prefer false positives over missing real founders.`;
+A 4 requires BOTH a founder signal AND a growth-related tweet. Bio alone is not enough for a 4. Score 3 or below if the tweet topic is unrelated to building or growing a product.`;
 
   for (const model of MODELS) {
     try {
