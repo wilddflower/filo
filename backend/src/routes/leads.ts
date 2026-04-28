@@ -33,12 +33,14 @@ function kwHash(keywords: Keywords): string {
 
 function mapToLead(scored: ScoredPost, keywords: Keywords): Lead {
   const { post, score, confidence, matchedKeywords, rationale } = scored;
+  const handle = post.authorHandle || "unknown";
+  const name = post.authorName || handle;
   return {
     id: post.id,
-    name: post.authorName,
-    handle: post.authorHandle,
-    avatarHue: hueFromHandle(post.authorHandle),
-    followers: formatFollowers(post.authorFollowers),
+    name,
+    handle,
+    avatarHue: hueFromHandle(handle),
+    followers: formatFollowers(post.authorFollowers ?? 0),
     time: timeAgo(post.createdAt),
     timestamp: formatTimestamp(post.createdAt),
     score,

@@ -55,12 +55,18 @@ export function hueFromHandle(handle: string): number {
   return hash % 360;
 }
 
-export function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+export function timeAgo(dateStr: string | null | undefined): string {
+  if (!dateStr) return "recently";
+  const ms = new Date(dateStr).getTime();
+  if (isNaN(ms)) return "recently";
+  const diff = Date.now() - ms;
+  if (diff < 0) return "just now";
   const h = Math.floor(diff / 3_600_000);
   if (h < 1) return "just now";
   if (h < 24) return `${h}h ago`;
-  return `${Math.floor(h / 24)}d ago`;
+  const d = Math.floor(h / 24);
+  if (d > 365) return "recently";
+  return `${d}d ago`;
 }
 
 export function formatFollowers(n: number): string {
@@ -69,8 +75,10 @@ export function formatFollowers(n: number): string {
   return String(n);
 }
 
-export function formatTimestamp(dateStr: string): string {
+export function formatTimestamp(dateStr: string | null | undefined): string {
+  if (!dateStr) return "";
   const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
   return (
     d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
     " · " +

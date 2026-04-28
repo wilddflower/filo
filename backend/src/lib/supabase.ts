@@ -84,16 +84,17 @@ export async function fetchCachedPosts(
   }
   if (!data || data.length === 0) return null;
 
-  console.log(`[supabase] Cache hit — ${data.length} posts for hash ${keywordHash}`);
-  return data.map((row) => ({
-    id: row.id,
-    text: row.text,
-    authorId: row.author_handle,
-    authorHandle: row.author_handle,
-    authorName: row.author_name,
+  const valid = data.filter((row) => row.id && row.text && row.author_handle);
+  console.log(`[supabase] Cache hit — ${valid.length}/${data.length} valid posts for hash ${keywordHash}`);
+  return valid.map((row) => ({
+    id: String(row.id),
+    text: row.text ?? "",
+    authorId: row.author_handle ?? "unknown",
+    authorHandle: row.author_handle ?? "unknown",
+    authorName: row.author_name ?? row.author_handle ?? "Unknown",
     authorFollowers: row.author_followers ?? 0,
     authorBio: row.author_bio ?? "",
-    createdAt: row.created_at_x,
+    createdAt: row.created_at_x ?? new Date().toISOString(),
     metrics: {
       likes: row.likes ?? 0,
       retweets: row.retweets ?? 0,
