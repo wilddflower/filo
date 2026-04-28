@@ -43,7 +43,9 @@ Scoring guide:
 - 4-5: clearly a founder/indie hacker + mentions growth, users, launch, or distribution in a relevant way
 - 1-3: general advice tweets, thought leadership with no product, B2B enterprise focus, sports/entertainment/unrelated topics, or someone who just has "founder" in bio but the tweet is completely off-topic
 
-A 4 requires BOTH a founder signal AND a growth-related tweet. Bio alone is not enough for a 4. Score 3 or below if the tweet topic is unrelated to building or growing a product.`;
+A 4 requires BOTH a founder signal AND a growth-related tweet. Bio alone is not enough for a 4. Score 3 or below if the tweet topic is unrelated to building or growing a product.
+
+Hard rule: score 1 for religious, motivational, sports, or entertainment tweets — even if they contain words like "traction", "build", "grow", or "users". "No traction" in a faith/sports/personal context is NOT a founder growth signal.`;
 
   for (const model of MODELS) {
     try {
@@ -182,6 +184,26 @@ function fallbackScore(post: XPost): ScoredPost {
     "need help", "help me", "any advice",
     "plateau", "stagnant",
   ];
+
+  // Hard-exclude tweets that are clearly off-topic regardless of other signals.
+  // These phrases reliably indicate religious, motivational, or entertainment content
+  // that has no relevance to B2C founder growth — even if they contain words like "traction."
+  const BLOCKLIST = [
+    "man of god", "woman of god", "child of god",
+    "jesus christ", "holy spirit", "holy ghost", "amen", "hallelujah",
+    "prayer request", "pray for me", "god is", "bless you",
+    "scripture", "bible verse", "psalm ", "the gospel",
+    "worship ", "church service", "sermon", "pastor ",
+  ];
+  if (BLOCKLIST.some((k) => text.includes(k))) {
+    return {
+      post,
+      score: 1,
+      confidence: "low",
+      matchedKeywords: [],
+      rationale: [{ tag: "Mismatch", text: "Off-topic content — not a startup/founder tweet." }],
+    };
+  }
 
   const highPainHits = HIGH_PAIN.filter((k) => text.includes(k)).length;
   const growthHits = FOUNDER_GROWTH.filter((k) => text.includes(k) || bio.includes(k)).length;

@@ -40,7 +40,7 @@ function mapToLead(scored: ScoredPost, keywords: Keywords): Lead {
     name,
     handle,
     avatarHue: hueFromHandle(handle),
-    followers: formatFollowers(post.authorFollowers ?? 0),
+    followers: post.authorFollowers ? formatFollowers(post.authorFollowers) : "",
     time: timeAgo(post.createdAt),
     timestamp: formatTimestamp(post.createdAt),
     score,

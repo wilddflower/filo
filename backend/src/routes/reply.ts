@@ -34,10 +34,10 @@ router.post("/", async (req, res) => {
 
   const toneStyle =
     tone === "helpful"
-      ? "Warm and supportive — like a knowledgeable friend who genuinely wants to help. Lead with empathy, then show the path forward. Honest, not pushy."
+      ? "Empathetic and practical — meet them where they are, then point to the solution. Like a startup friend who actually knows the answer."
       : tone === "informative"
-      ? "Clear and educational — explain what the product does and why it matters for their specific situation. Concrete and specific, not vague. Still human."
-      : "Confident and direct — lead with the value, make the offer feel generous, close with a clear next step. Persuasive but not salesy.";
+      ? "Specific and clear — explain exactly what the product does for their situation. Don't be vague. Teach them something useful in 2 sentences."
+      : "Confident and direct — clear value, generous offer, obvious next step. No hedging.";
 
   const prompt = `You are crafting a personalized ${medium} for ${authorName} on X (Twitter).
 ${founderName ? `You are ${founderName}, ` : ""}replying on behalf of ${company}.${productDesc ? ` What you do: ${productDesc}` : ""}
@@ -51,18 +51,19 @@ Max ${charLimit} characters.
 
 Write the reply in exactly this 3-part flow (do NOT label the sections — just write naturally):
 
-PART 1 — Respond directly to what they said. Be specific — name their exact situation, pain, or question. If they're expressing frustration or confusion, acknowledge it first before anything else.
+PART 1 — Respond directly to what they said. Name their exact situation or pain. If they're frustrated, acknowledge it first.
 
-PART 2 — Bridge from their specific situation to ${company}. Draw a direct line from the exact thing they mentioned in the tweet to what ${company} does — use their language. One or two sentences max. Make it feel obvious, not like a pitch. Do NOT use phrases like "this is literally what we built for" or "we exist for this."
+PART 2 — Connect their specific situation to ${company}. Use their exact words, not generic startup speak. One or two sentences. Make it feel like an obvious fit, not a sales pitch. Do NOT use phrases like "this is literally what we built for" or "we exist for this."
 
 PART 3 — The CTA: ${urlLine || `tell them how to try it or learn more.`}
 
 Tone and style:
 - ${toneStyle}
-- Professional and warm. Not stiff corporate. Not Gen Z slang. Think: smart colleague who cares.
-- Short, clear sentences. No em-dashes. No hashtags. No buzzwords.
-- Sound like a real person who read their tweet carefully, not a brand account blasting replies.
-- The product recommendation should feel earned — they should finish reading and think "that actually makes sense for me."
+- X/Twitter native energy — casual, conversational, how startup people actually talk on here. Not corporate, not formal.
+- Still informative — they should actually learn something about the product, not just get a vague "we can help."
+- Short sentences. No em-dashes. No hashtags. No buzzwords.
+- Sound like a real person who read their tweet, not a brand account blasting replies.
+- The reply should make them think "oh that makes sense" not "ugh another pitch."
 
 Return a JSON object with exactly these fields, nothing else:
 {
