@@ -3,6 +3,7 @@ import { SAMPLE_POSTS } from "../data/mockPosts";
 import { MOCK_LEADS } from "../data/mockLeads";
 import { scoreAll, scorePost, quickFilter, ruleScore } from "../services/intentScorer";
 import { scrapeXSearch, hasAuth, poolSize } from "../lib/xScraper";
+import { fetchCachedPosts, isSupabaseConfigured } from "../lib/supabase";
 import { detectCategory, hueFromHandle, timeAgo, formatFollowers, formatTimestamp } from "../lib/apify";
 import type { Keywords, Lead } from "../types";
 import type { ScoredPost } from "../services/intentScorer";
@@ -101,6 +102,21 @@ router.post("/search", async (req, res) => {
   };
 
   if (!hasAuth()) {
+    // No X auth — try Supabase cache (mega-scrape posts) before falling to mock
+    if (isSupabaseConfigured()) {
+      const cached = await fetchCachedPosts(kwHash(keywords), 30 * 24 * 60 * 60 * 1000);
+      if (cached && cached.length > 0) {
+        const hash = kwHash(keywords);
+        if (ruleCacheHash !== hash) {
+          ruleCache = buildRuleLeads(cached, keywords);
+          ruleCacheHash = hash;
+        }
+        console.log(`[leads] No X auth — serving ${ruleCache.length} leads from Supabase`);
+        res.json({ leads: ruleCache, source: "live", pool: cached.length });
+        triggerGroqBackground(cached, keywords, hash);
+        return;
+      }
+    }
     res.json({ leads: MOCK_LEADS, source: "mock", pool: 0 });
     return;
   }
