@@ -103,19 +103,23 @@ router.post("/search", async (req, res) => {
 
   if (!hasAuth()) {
     // No X auth — try Supabase cache (mega-scrape posts) before falling to mock
-    if (isSupabaseConfigured()) {
-      const cached = await fetchCachedPosts(kwHash(keywords), 30 * 24 * 60 * 60 * 1000);
-      if (cached && cached.length > 0) {
-        const hash = kwHash(keywords);
-        if (ruleCacheHash !== hash) {
-          ruleCache = buildRuleLeads(cached, keywords);
-          ruleCacheHash = hash;
+    try {
+      if (isSupabaseConfigured()) {
+        const cached = await fetchCachedPosts(kwHash(keywords), 30 * 24 * 60 * 60 * 1000);
+        if (cached && cached.length > 0) {
+          const hash = kwHash(keywords);
+          if (ruleCacheHash !== hash) {
+            ruleCache = buildRuleLeads(cached, keywords);
+            ruleCacheHash = hash;
+          }
+          console.log(`[leads] No X auth — serving ${ruleCache.length} leads from Supabase`);
+          res.json({ leads: ruleCache, source: "live", pool: cached.length });
+          triggerGroqBackground(cached, keywords, hash);
+          return;
         }
-        console.log(`[leads] No X auth — serving ${ruleCache.length} leads from Supabase`);
-        res.json({ leads: ruleCache, source: "live", pool: cached.length });
-        triggerGroqBackground(cached, keywords, hash);
-        return;
       }
+    } catch (e) {
+      console.error("[leads] Supabase fallback failed:", (e as Error).message);
     }
     res.json({ leads: MOCK_LEADS, source: "mock", pool: 0 });
     return;
