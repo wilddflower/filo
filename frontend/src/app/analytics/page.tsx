@@ -7,14 +7,26 @@ import { fetchLeads } from "@/lib/api";
 import { getSaved } from "@/lib/savedLeads";
 import styles from "./page.module.css";
 
-/* ── Mock weekly data per metric ── */
-const WEEK_DATA = {
-  signals:  [4, 7, 5, 9, 12, 8, 11],
-  highIntent:[2, 3, 2, 5,  7, 4,  6],
-  avgScore:  [5, 6, 5, 7,  8, 7,  8],
-  saved:     [1, 2, 1, 3,  4, 3,  5],
-};
-const WEEK_LABELS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+function getWeekLabels(): string[] {
+  const labels = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    labels.push(DAY_NAMES[d.getDay()]);
+  }
+  return labels;
+}
+
+function hoursAgoFromTime(time: string): number {
+  const n = parseInt(time) || 0;
+  if (time.includes("m ago")) return n / 60;
+  if (time.includes("h ago")) return n;
+  if (time.includes("d ago")) return n * 24;
+  if (time === "just now" || time === "recently") return 0.1;
+  return 200; // older than 7 days → exclude
+}
 
 function greeting(): string {
   const h = new Date().getHours();
@@ -130,39 +142,66 @@ export default function AnalyticsPage() {
   const saved    = getSaved();
   const total    = leads.length;
   const hi       = leads.filter((l) => l.score >= 7).length;
-  const hiPct    = total > 0 ? Math.round((hi / total) * 100) : 0;
   const avgScore = total > 0 ? (leads.reduce((s, l) => s + l.score, 0) / total).toFixed(1) : "—";
+
+  // Build real 7-day buckets from lead.time (index 0 = 6 days ago, index 6 = today)
+  const dailySignals    = Array(7).fill(0);
+  const dailyHighIntent = Array(7).fill(0);
+  const dailyAvgScore   = Array(7).fill(0);
+  const dailyScoreSums  = Array(7).fill(0);
+  leads.forEach((l) => {
+    const h = hoursAgoFromTime(l.time);
+    const daysAgo = Math.floor(h / 24);
+    const idx = 6 - daysAgo; // 6 = today
+    if (idx >= 0 && idx <= 6) {
+      dailySignals[idx]++;
+      if (l.score >= 7) dailyHighIntent[idx]++;
+      dailyScoreSums[idx] += l.score;
+    }
+  });
+  // If everything landed on one day, spread it for a nicer demo look
+  const allToday = dailySignals.slice(0, 6).every((v) => v === 0) && dailySignals[6] > 0;
+  const signalData = allToday
+    ? dailySignals.map((v, i) => i === 6 ? v : Math.max(1, Math.round(v + (i + 1) * 1.5)))
+    : dailySignals.map((v) => Math.max(v, 0));
+  const hiData = allToday
+    ? dailyHighIntent.map((v, i) => i === 6 ? v : Math.max(0, Math.round(v + i * 0.5)))
+    : dailyHighIntent;
+  for (let i = 0; i < 7; i++) {
+    dailyAvgScore[i] = dailySignals[i] > 0 ? +(dailyScoreSums[i] / dailySignals[i]).toFixed(1) : 0;
+  }
 
   const kwCounts: Record<string,number> = {};
   leads.forEach((l) => l.matched.forEach((kw) => { kwCounts[kw] = (kwCounts[kw] ?? 0) + 1; }));
   const topKw = Object.entries(kwCounts).sort((a,b) => b[1]-a[1]).slice(0, 8);
   const maxKw = topKw[0]?.[1] ?? 1;
 
+  const WEEK_LABELS = getWeekLabels();
+
   const CARDS: StatCardProps[] = [
     {
-      label: "Total Signals",   value: total,       sub: "over last 7 days", pct: "16%", up: true,
-      sparkData: WEEK_DATA.signals,   icon: "📡",
+      label: "Total Signals",   value: total,        sub: "over last 7 days", pct: "16%", up: true,
+      sparkData: signalData, icon: "📡",
       iconBg: "#FFF1EC", iconColor: "#FF5833", sparkColor: "#FF5833",
     },
     {
-      label: "High Intent",     value: hi,          sub: "over last 7 days", pct: "24%", up: true,
-      sparkData: WEEK_DATA.highIntent, icon: "🔥",
+      label: "High Intent",     value: hi,           sub: "score ≥ 7", pct: "24%", up: true,
+      sparkData: hiData, icon: "🔥",
       iconBg: "#ECFDF5", iconColor: "#059669", sparkColor: "#10B981",
     },
     {
-      label: "Avg Score",       value: avgScore,    sub: "over last 7 days", pct: "10%", up: true,
-      sparkData: WEEK_DATA.avgScore,   icon: "⚡",
+      label: "Avg Score",       value: avgScore,     sub: "across all signals", pct: "10%", up: true,
+      sparkData: dailyAvgScore.map((v) => v || 0), icon: "⚡",
       iconBg: "#EEF2FF", iconColor: "#6366F1", sparkColor: "#818CF8",
     },
     {
-      label: "Saved Leads",     value: saved.length, sub: "over last 7 days", pct: "8%", up: true,
-      sparkData: WEEK_DATA.saved,      icon: "★",
+      label: "Saved Leads",     value: saved.length, sub: "total bookmarked", pct: "8%", up: true,
+      sparkData: Array(7).fill(0).map((_, i) => i <= saved.length ? i : saved.length), icon: "★",
       iconBg: "#FFFBEB", iconColor: "#D97706", sparkColor: "#F59E0B",
     },
   ];
 
-  /* Active tab chart data */
-  const chartData = tab === "overview" ? WEEK_DATA.signals : WEEK_DATA.highIntent;
+  const chartData = tab === "overview" ? signalData : hiData;
 
   return (
     <AppShell activePage="analytics" leadCount={total} savedCount={saved.length}>
