@@ -5,3 +5,4 @@ dist/
 .next/
 backend/auth.json
 backend/save-auth.js
+.gstack/

@@ -20,6 +20,10 @@ export async function generateReply(params: {
   return { text: data.text as string, humanityScore: data.humanityScore ?? 0, humanityNote: data.humanityNote ?? "" };
 }
 
+// FB and Reddit are always mock — backend only scrapes X
+const SOCIAL_MOCKS = MOCK_LEADS.filter((l) => l.platform !== "x");
+const X_MOCKS      = MOCK_LEADS.filter((l) => l.platform === "x");
+
 export async function fetchLeads(): Promise<Lead[]> {
   try {
     const raw = localStorage.getItem("keywords");
@@ -43,8 +47,9 @@ export async function fetchLeads(): Promise<Lead[]> {
     }
     const data = await res.json();
     console.log("[fetchLeads] source:", data.source, "pool:", data.pool, "leads:", data.leads?.length);
-    const leads = data.leads as Lead[];
-    return leads.length > 0 ? leads : MOCK_LEADS;
+    const xLeads = (data.leads as Lead[]) ?? [];
+    // Always attach FB + Reddit mock posts alongside live X leads
+    return [...(xLeads.length > 0 ? xLeads : X_MOCKS), ...SOCIAL_MOCKS];
   } catch (e) {
     console.error("[fetchLeads] Error:", e);
     return MOCK_LEADS;

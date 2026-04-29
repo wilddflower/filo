@@ -55,9 +55,12 @@ interface AppShellProps {
 
 export function AppShell({ activePage, children, leadCount, savedCount }: AppShellProps) {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [userName, setUserName] = useState("You");
   const [userCompany, setUserCompany] = useState("Starter plan");
   const [initials, setInitials] = useState("?");
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     try {
@@ -105,8 +108,8 @@ export function AppShell({ activePage, children, leadCount, savedCount }: AppShe
               >
                 <Ico />
                 {item.label}
-                {count != null && count > 0 && (
-                  <span className={styles.navCount} suppressHydrationWarning>{count}</span>
+                {mounted && count != null && count > 0 && (
+                  <span className={styles.navCount}>{count}</span>
                 )}
               </Link>
             );

@@ -12,6 +12,7 @@ import styles from "./LeadDashboard.module.css";
 const PT_OPTS = [
   { label: "𝕏 Twitter", value: "x"        },
   { label: "Facebook",  value: "facebook" },
+  { label: "Reddit",    value: "reddit"   },
 ] as const;
 
 const PAGE_SIZE = 12;

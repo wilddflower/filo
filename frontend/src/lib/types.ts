@@ -1,5 +1,5 @@
 export type ScoreTier = "hi" | "md" | "lo";
-export type Platform = "x" | "facebook";
+export type Platform = "x" | "facebook" | "reddit";
 export type PostCategory = "Lead Finding" | "Competitor Analysis" | "Market Research";
 
 export interface FounderProfile {

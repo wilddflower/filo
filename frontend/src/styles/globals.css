@@ -61,6 +61,23 @@
     radial-gradient(420px 320px at 18% 88%,  rgba(80,50,200,0.05),  transparent 65%);
 }
 
+/* ── Reddit platform theme ──────────────────────────────────── */
+:root[data-platform="reddit"] {
+  --accent:        #FF4500;
+  --accent-ink:    #D93A00;
+  --accent-soft:   #FFF0EB;
+  --accent-soft-2: #FFF5F2;
+  --accent-hover:  #FF5722;
+}
+
+:root[data-platform="reddit"] body::before {
+  background:
+    radial-gradient(620px 420px at 8% 6%,   rgba(255,69,0,0.09),  transparent 60%),
+    radial-gradient(520px 380px at 96% 12%,  rgba(255,120,50,0.07), transparent 65%),
+    radial-gradient(680px 500px at 82% 94%,  rgba(255,69,0,0.05),  transparent 60%),
+    radial-gradient(420px 320px at 18% 88%,  rgba(200,40,0,0.04),  transparent 65%);
+}
+
 /* ── X platform: keep orange (default) ─────────────────────── */
 
 * { box-sizing: border-box; }

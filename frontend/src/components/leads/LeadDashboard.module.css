@@ -9,10 +9,15 @@
   --pt-glow: rgba(17,17,17,0.10);
 }
 
-/* Platform theming — X stays black, Facebook shifts blue */
+/* Platform theming — X stays black, Facebook shifts blue, Reddit shifts red */
 .shell[data-platform="facebook"] {
   --pt-color: #1877F2;
   --pt-glow: rgba(24,119,242,0.10);
+}
+
+.shell[data-platform="reddit"] {
+  --pt-color: #FF4500;
+  --pt-glow: rgba(255,69,0,0.10);
 }
 
 /* ── Top bar ── */

@@ -32,15 +32,18 @@ router.post("/", async (req, res) => {
       ? `Include the promo code "${promoCode}" casually near the end — like "grab it with ${promoCode}" not "use code X".`
       : "";
 
+  const cloverContext = `AI growth agents that help founders crack distribution and get their first users — we build the engine that drives revenue on autopilot so founders can focus on the product`;
+  const productContext = productDesc || cloverContext;
+
   const toneStyle =
     tone === "helpful"
-      ? "Empathetic and practical — meet them where they are, then point to the solution. Like a startup friend who actually knows the answer."
+      ? "Empathetic opener — acknowledge their pain like a founder who's been there. Then flip to excited when you drop the product. Warm but punchy."
       : tone === "informative"
-      ? "Specific and clear — explain exactly what the product does for their situation. Don't be vague. Teach them something useful in 2 sentences."
-      : "Confident and direct — clear value, generous offer, obvious next step. No hedging.";
+      ? "Teach them something specific in 1 sentence, then show exactly how the product solves it. Concrete, no fluff."
+      : "High energy start to finish. Catchy, confident, obvious next step. Make it feel like this was made for them.";
 
   const prompt = `You are crafting a personalized ${medium} for ${authorName} on X (Twitter).
-${founderName ? `You are ${founderName}, ` : ""}replying on behalf of ${company}.${productDesc ? ` What you do: ${productDesc}` : ""}
+${founderName ? `You are ${founderName}, ` : ""}replying on behalf of ${company}.${` What you do: ${productContext}`}
 
 Their bio: "${authorBio}"${recentContext}
 
@@ -51,19 +54,18 @@ Max ${charLimit} characters.
 
 Write the reply in exactly this 3-part flow (do NOT label the sections — just write naturally):
 
-PART 1 — Respond directly to what they said. Name their exact situation or pain. If they're frustrated, acknowledge it first.
+PART 1 — Respond directly to what they said in 1 sentence. Name their exact pain or situation. If they're frustrated, say so.
 
-PART 2 — Connect their specific situation to ${company}. Use their exact words, not generic startup speak. One or two sentences. Make it feel like an obvious fit, not a sales pitch. Do NOT use phrases like "this is literally what we built for" or "we exist for this."
+PART 2 — Echo one specific word, phrase, or situation from their tweet — then pivot to ${company} with energy. Structure: "[their specific thing] is exactly where ${company} comes in — we're [what you do in their terms]." Pull from their actual post. If they said "traction", use "traction". If they said "first users", say "first users". Make the connection feel inevitable, not generic. One or two sentences.
 
-PART 3 — The CTA: ${urlLine || `tell them how to try it or learn more.`}
+PART 3 — The CTA: ${urlLine || `Tell them to check it out — "get the ball rolling" energy. Give them a clear next step.`}
 
 Tone and style:
 - ${toneStyle}
-- X/Twitter native energy — casual, conversational, how startup people actually talk on here. Not corporate, not formal.
-- Still informative — they should actually learn something about the product, not just get a vague "we can help."
-- Short sentences. No em-dashes. No hashtags. No buzzwords.
-- Sound like a real person who read their tweet, not a brand account blasting replies.
-- The reply should make them think "oh that makes sense" not "ugh another pitch."
+- X/Twitter native energy — casual, punchy, how startup founders actually talk on here. Not corporate, not formal.
+- The product intro (Part 2) should feel catchy and excited — like you genuinely love what you built, not a brand account blasting replies.
+- Short sentences. NEVER use em-dashes (—). No hashtags. No buzzwords like "leverage", "streamline", "journey", or "game-changer".
+- Sound like a real person who read their tweet and immediately thought "oh I know exactly what you need."
 
 Return a JSON object with exactly these fields, nothing else:
 {
@@ -76,14 +78,14 @@ Return a JSON object with exactly these fields, nothing else:
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.72,
+      temperature: 0.82,
       max_tokens: 400,
       response_format: { type: "json_object" },
     });
 
     const raw = completion.choices[0]?.message?.content?.trim() ?? "{}";
     const parsed = JSON.parse(raw);
-    let text = (parsed.text ?? "").replace(/^["']|["']$/g, "").trim();
+    let text = (parsed.text ?? "").replace(/^["']|["']$/g, "").replace(/\s*—\s*/g, " ").trim();
     const humanityScore = typeof parsed.humanityScore === "number" ? parsed.humanityScore : 0;
     const humanityNote = typeof parsed.humanityNote === "string" ? parsed.humanityNote : "";
 

@@ -21,9 +21,10 @@ const SCORE_OPTIONS = [
 ] as const;
 
 const PLATFORM_OPTIONS = [
-  { label: "All", value: "all" },
-  { label: "𝕏", value: "x" },
+  { label: "All",      value: "all"      },
+  { label: "𝕏",        value: "x"        },
   { label: "Facebook", value: "facebook" },
+  { label: "Reddit",   value: "reddit"   },
 ] as const;
 
 function extractCompetitor(lead: Lead): string | null {

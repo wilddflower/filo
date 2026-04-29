@@ -27,7 +27,11 @@
       "Bash(node -e \"require\\('dotenv/config'\\); const token = process.env.APIFY_TOKEN; fetch\\('https://api.apify.com/v2/acts/apidojo~tweet-scraper/run-sync-get-dataset-items?token=' + token, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify\\({ startUrls: ['https://twitter.com/search?q=social+listening+tool&src=typed_query&f=live'], maxItems: 5 }\\), signal: AbortSignal.timeout\\(35000\\) }\\).then\\(r => r.json\\(\\)\\).then\\(items => { const real = items.filter\\(i => !i.noResults && i.text\\); console.log\\('Total:', items.length, 'Real:', real.length\\); if\\(real[0]\\) console.log\\('Sample:', JSON.stringify\\(real[0]\\).slice\\(0,500\\)\\); else console.log\\('First raw:', JSON.stringify\\(items[0]\\)\\); }\\).catch\\(e => console.error\\('Error:', e.message\\)\\);\")",
       "Bash(python3 -m json.tool)",
       "Bash(time curl *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git config *)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\Pavni\\.gstack"
